@@ -145,7 +145,7 @@ public class JDBCClient {
     }
 
     /**
-     * 使用Hive JDBC接口来执行HQL命令<br>
+     * 本示例演示了如何使用Hive JDBC接口来执行HQL命令<br>
      * <br>
      *
      * @throws ClassNotFoundException
@@ -206,14 +206,20 @@ public class JDBCClient {
             // 执行DDL任务
             Statement stmt = connection.createStatement(); // 创建Statement对象来执行SQL查询
             ResultSet rs = stmt.executeQuery(
-                    "select yearmonth, count(1),sum(AMT_ORDER_SUM),sum(QTY_DEMAND_SUM1),sum(QTY_ORDER_SUM1) from sdi.sdi_hy_cc_order   where yearmonth >='202301'  group by yearmonth ORDER BY yearmonth ASC\r\n"); // 执行查询并获取结果
+                    "SELECT yearmonth AS yearmonth, COUNT(1) AS Totall, SUM(AMT_ORDER_SUM) AS AMT_ORDER_SUM, SUM(QTY_DEMAND_SUM1) AS QTY_DEMAND_SUM1, SUM(QTY_ORDER_SUM1) AS QTY_ORDER_SUM1\r\n"
+                            + //
+                            "FROM sdi.sdi_hy_cc_order\r\n" + //
+                            "WHERE yearmonth >= '202406'\r\n" + //
+                            "GROUP BY yearmonth\r\n" + //
+                            "ORDER BY yearmonth ASC"); // 执行查询并获取结果
             // 处理结果
             List list = getList(rs);
-            // 输出结果
-            for (int i = 0; i < list.size(); i++) {
-                Map map = (Map) list.get(i);
-                System.out.println(map);
+            System.out.println("----------------------------------------------------------------------");
+            System.out.println("************查询结果************");
+            for (Object object : list) {
+                System.out.println(object);
             }
+            System.out.println("----------------------------------------------------------------------");
             // 关闭结果集、声明和连接
             rs.close();
             stmt.close();
@@ -240,8 +246,16 @@ public class JDBCClient {
             Map rowData = new HashMap();// 声明Map
             for (int i = 1; i <= columnCount; i++) {
                 rowData.put(md.getColumnName(i), rs.getObject(i));// 获取键名及值
+                System.out.println(md.getColumnName(i) + " : " + rs.getObject(i));
             }
-            list.add(rowData);
+            System.out.println("----------------------------------------------------------------------");
+            // list.add(rowData);
+
+            // 将获取的键名getColumnName及值getObject按键名顺序放入list中
+            List<Map.Entry<String, Object>> entryList = new ArrayList<>(rowData.entrySet());
+            // 通过比较器实现比较排序
+            entryList.sort(Map.Entry.comparingByKey());
+            list.add(entryList);
 
         }
         return list;
