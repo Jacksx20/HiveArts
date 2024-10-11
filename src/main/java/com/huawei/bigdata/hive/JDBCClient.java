@@ -1,6 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2012-2019. All rights reserved.
- */
 
 package com.huawei.bigdata.hive;
 
@@ -118,6 +115,7 @@ public class JDBCClient {
         zooKeeperNamespace = clientInfo.getProperty("zooKeeperNamespace");
         serviceDiscoveryMode = clientInfo.getProperty("serviceDiscoveryMode");
         principal = clientInfo.getProperty("principal");
+        @SuppressWarnings("unused")
         String krb5Path = resourceLoader.getResource("krb5.conf").getPath();
         KRB5_FILE = userdir + "krb5.conf";
         System.setProperty("java.security.krb5.conf", KRB5_FILE);
@@ -206,10 +204,10 @@ public class JDBCClient {
             // 执行DDL任务
             Statement stmt = connection.createStatement(); // 创建Statement对象来执行SQL查询
             ResultSet rs = stmt.executeQuery(
-                    "SELECT yearmonth AS yearmonth, COUNT(1) AS Totall, SUM(AMT_ORDER_SUM) AS AMT_ORDER_SUM, SUM(QTY_DEMAND_SUM1) AS QTY_DEMAND_SUM1, SUM(QTY_ORDER_SUM1) AS QTY_ORDER_SUM1\r\n"
+                    "SELECT yearmonth AS A_yearmonth, COUNT(1) AS B_Totall, SUM(AMT_ORDER_SUM) AS C_AMT_ORDER_SUM, SUM(QTY_DEMAND_SUM1) AS D_QTY_DEMAND_SUM1, SUM(QTY_ORDER_SUM1) AS E_QTY_ORDER_SUM1\r\n"
                             + //
                             "FROM sdi.sdi_hy_cc_order\r\n" + //
-                            "WHERE yearmonth >= '202406'\r\n" + //
+                            "WHERE yearmonth >= '202301'\r\n" + //
                             "GROUP BY yearmonth\r\n" + //
                             "ORDER BY yearmonth ASC"); // 执行查询并获取结果
             // 处理结果
@@ -246,9 +244,9 @@ public class JDBCClient {
             Map rowData = new HashMap();// 声明Map
             for (int i = 1; i <= columnCount; i++) {
                 rowData.put(md.getColumnName(i), rs.getObject(i));// 获取键名及值
-                System.out.println(md.getColumnName(i) + " : " + rs.getObject(i));
+                // System.out.println(md.getColumnName(i) + " : " + rs.getObject(i));
             }
-            System.out.println("----------------------------------------------------------------------");
+            // System.out.println("----------------------------------------------------------------------");
             // list.add(rowData);
 
             // 将获取的键名getColumnName及值getObject按键名顺序放入list中
