@@ -204,7 +204,7 @@ public class JDBCClient {
             // 执行DDL任务
             Statement stmt = connection.createStatement(); // 创建Statement对象来执行SQL查询
             ResultSet rs = stmt.executeQuery(
-                    "SELECT yearmonth AS A_yearmonth, COUNT(1) AS B_Totall, SUM(AMT_ORDER_SUM) AS C_AMT_ORDER_SUM, SUM(QTY_DEMAND_SUM1) AS D_QTY_DEMAND_SUM1, SUM(QTY_ORDER_SUM1) AS E_QTY_ORDER_SUM1\r\n"
+                    "SELECT yearmonth AS A_yearmonth, COUNT(1) AS B_Totall, SUM(AMT_ORDER_SUM) AS C_AMT_ORDER_SUM, SUM(QTY_DEMAND_SUM1) AS D_QTY_DEMAND_SUM, SUM(QTY_ORDER_SUM1) AS E_QTY_ORDER_SUM\r\n"
                             + //
                             "FROM sdi.sdi_hy_cc_order\r\n" + //
                             "WHERE yearmonth >= '202301'\r\n" + //

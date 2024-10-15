@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.huawei.mrs</groupId>
-  <artifactId>order-hive-jdbc</artifactId>
-  <version>8.2.1-321.r13</version>
+  <artifactId>HiveArts</artifactId>
+  <version>1.0.0</version>
   <properties>
     <hadoop.version>3.3.1-h0.cbu.mrs.321.r13</hadoop.version>
     <hive.version>3.1.0-h0.cbu.mrs.321.r13</hive.version>
@@ -202,7 +202,7 @@
 		  <configuration>
 			<archive>
 			  <manifest>
-				<mainClass>com.huawei.bigdata.hive.example.JDBCClientService</mainClass>
+				<mainClass>com.huawei.bigdata.hive.JDBCClientService</mainClass>
 			  </manifest>
 			</archive>
 			<descriptorRefs>
