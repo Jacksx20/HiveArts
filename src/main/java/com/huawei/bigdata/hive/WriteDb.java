@@ -1,6 +1,5 @@
 package com.huawei.bigdata.hive;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -14,9 +13,8 @@ import java.util.Map;
 
 public class WriteDb {
 
-	// 初始化参数
-	private static void init() throws IOException {
-		System.out.println("初始化配...........");
+	public static void main(String[] args) {
+		System.out.println("初始化配置...........");
 
 		String KRB5_FILE = "src/main/resources/krb/krb5.conf";
 		String ZOOKEEPER_DEFAULT_SERVER_PRINCIPAL = "zookeeper/hadoop.hadoop.com";
@@ -26,10 +24,7 @@ public class WriteDb {
 		System.setProperty("java.security.krb5.conf", KRB5_FILE);
 		// 设置Zookeeper服务的主体
 		System.setProperty(ZOOKEEPER_SERVER_PRINCIPAL_KEY, ZOOKEEPER_DEFAULT_SERVER_PRINCIPAL);
-	}
 
-	public static void main(String[] args) throws IOException {
-		init();
 		Connection connection = null;
 		// 使用你的数据库URL、用户名和密码替换以下字符串
 		String url = "jdbc:hive2://10.97.213.6:24002,10.97.213.5:24002,10.97.213.4:24002/;serviceDiscoveryMode=zooKeeper;mapreduce.job.queuename=bigdata_prd;zooKeeperNamespace=hiveserver2;sasl.qop=auth-conf;auth=KERBEROS;principal=hive/hadoop.hadoop.com@HADOOP.COM;user.principal=W0008817;user.keytab=src/main/resources/krb/user.keytab;";
