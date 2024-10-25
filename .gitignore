@@ -23,4 +23,5 @@
 hs_err_pid*
 replay_pid*
 
-
+#排除target目录
+target/
