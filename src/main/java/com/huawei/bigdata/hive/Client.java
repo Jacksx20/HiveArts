@@ -66,7 +66,7 @@ public class Client {
                 + File.separator
                 + "resources"
                 + File.separator
-                + "krb"
+                + "Kerberos"
                 + File.separator;
         InputStream fileInputStream = null;
         try {
@@ -128,7 +128,7 @@ public class Client {
         // 参数初始化
         init();
 
-        String url = "jdbc:hive2://10.97.213.6:24002,10.97.213.5:24002,10.97.213.4:24002/;serviceDiscoveryMode=zooKeeper;mapreduce.job.queuename=bigdata_prd;zooKeeperNamespace=hiveserver2;sasl.qop=auth-conf;auth=KERBEROS;principal=hive/hadoop.hadoop.com@HADOOP.COM;user.principal=W0008817;user.keytab=src/main/resources/krb/user.keytab;";
+        String url = "jdbc:hive2://10.97.213.6:24002,10.97.213.5:24002,10.97.213.4:24002/;serviceDiscoveryMode=zooKeeper;mapreduce.job.queuename=bigdata_prd;zooKeeperNamespace=hiveserver2;sasl.qop=auth-conf;auth=KERBEROS;principal=hive/hadoop.hadoop.com@HADOOP.COM;user.principal=W0008818;user.keytab=src/main/resources/Kerberos/user.keytab;";
         // 输出拼接的URL
         System.out.println("----------------------------------------------------------------------");
         System.out.println("************拼接好的URL************\n" + url);
