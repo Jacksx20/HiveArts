@@ -120,7 +120,7 @@ public class JDBCClient {
         KRB5_FILE = userdir + "krb5.conf";
         System.setProperty("java.security.krb5.conf", KRB5_FILE);
         // 设置新建用户的USER_NAME，其中"xxx"指代之前创建的用户名，例如创建的用户为user，则USER_NAME为user
-        USER_NAME = "W0008817";
+        USER_NAME = "W0008818";
         JOB_QUEUE_NAME = clientInfo.getProperty("mapreduce.job.queuename");
 
         if ("KERBEROS".equalsIgnoreCase(auth)) {
