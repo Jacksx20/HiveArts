@@ -14,7 +14,6 @@ public class WriteDb {
 		System.setProperty("zookeeper.server.principal", "zookeeper/hadoop.hadoop.com");
 
 		Connection connection = null;
-		// 使用你的数据库URL、用户名和密码替换以下字符串
 		String url = "jdbc:hive2://10.97.213.6:24002,10.97.213.5:24002,10.97.213.4:24002/;serviceDiscoveryMode=zooKeeper;mapreduce.job.queuename=bigdata_prd;zooKeeperNamespace=hiveserver2;sasl.qop=auth-conf;auth=KERBEROS;principal=hive/hadoop.hadoop.com@HADOOP.COM;user.principal=W0008818;user.keytab=src/main/resources/Kerberos/user.keytab;";
 
 		try {
