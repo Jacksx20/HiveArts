@@ -1,9 +1,6 @@
 
 package com.huawei.bigdata.hive;
 
-import com.huawei.bigdata.security.KerberosUtil;
-import com.huawei.bigdata.security.LoginUtil;
-import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,32 +26,17 @@ public class Client {
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
     private static final String HIVE_DRIVER = "org.apache.hive.jdbc.HiveDriver";
 
-    @SuppressWarnings("unused")
-    private static final String ZOOKEEPER_DEFAULT_LOGIN_CONTEXT_NAME = "Client";
     private static final String ZOOKEEPER_SERVER_PRINCIPAL_KEY = "zookeeper.server.principal";
     private static String ZOOKEEPER_DEFAULT_SERVER_PRINCIPAL = null;
 
-    @SuppressWarnings("unused")
-    private static Configuration CONF = null;
     private static String KRB5_FILE = null;
-    private static String USER_NAME = null;
-    private static String USER_KEYTAB_FILE = null;
 
-    /** yarn 队列名称 */
-    private static String JOB_QUEUE_NAME = null;
-
-    /* zookeeper节点ip和端口列表 */
-    private static String zkQuorum = null;
+    /* zookeeper认证方式 */
     private static String auth = null;
-    private static String sasl_qop = null;
-    private static String zooKeeperNamespace = null;
-    private static String serviceDiscoveryMode = null;
-    private static String principal = null;
 
     // 初始化参数
     private static void init() throws IOException {
         System.out.println("初始化配置文件...........");
-        CONF = new Configuration();
         // 客户端配置文件
         Properties clientInfo = null;
         // 寻找当前用户目录下的配置文件
@@ -87,27 +69,16 @@ public class Client {
                 fileInputStream.close();
             }
         }
-        /**
-         * zkQuorum获取后的格式为"xxx.xxx.xxx.xxx:24002,xxx.xxx.xxx.xxx:24002,xxx.xxx.xxx.xxx:24002";
-         * "xxx.xxx.xxx.xxx"为集群中ZooKeeper所在节点的业务IP，端口默认是24002
-         */
-        zkQuorum = clientInfo.getProperty("zk.quorum");
+
         auth = clientInfo.getProperty("auth");
-        sasl_qop = clientInfo.getProperty("sasl.qop");
-        zooKeeperNamespace = clientInfo.getProperty("zooKeeperNamespace");
-        serviceDiscoveryMode = clientInfo.getProperty("serviceDiscoveryMode");
-        principal = clientInfo.getProperty("principal");
 
         // String krb5Path = userdir + "krb5.conf";
         // String krb5Path = resourceLoader.getResource("krb5.conf").getPath();
         KRB5_FILE = userdir + "krb5.conf";
         System.setProperty("java.security.krb5.conf", KRB5_FILE);
-        USER_NAME = "W0008817";
-        JOB_QUEUE_NAME = clientInfo.getProperty("mapreduce.job.queuename");
 
         if ("KERBEROS".equalsIgnoreCase(auth)) {
             // 设置客户端的keytab和zookeeper认证principal
-            USER_KEYTAB_FILE = "src/main/resources/krb/user.keytab";
 
             ZOOKEEPER_DEFAULT_SERVER_PRINCIPAL = "zookeeper/hadoop.hadoop.com";
             System.setProperty(ZOOKEEPER_SERVER_PRINCIPAL_KEY, ZOOKEEPER_DEFAULT_SERVER_PRINCIPAL);

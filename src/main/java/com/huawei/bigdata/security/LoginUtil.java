@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+//import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -31,23 +31,18 @@ public class LoginUtil {
 
     private static final String JAVA_SECURITY_KRB5_CONF_KEY = "java.security.krb5.conf";
 
-    private static final String LOGIN_FAILED_CAUSE_PASSWORD_WRONG =
-            "(wrong password) keytab file and user not match, you can kinit -k -t keytab user in client server to"
-                    + " check";
+    private static final String LOGIN_FAILED_CAUSE_PASSWORD_WRONG = "(wrong password) keytab file and user not match, you can kinit -k -t keytab user in client server to"
+            + " check";
 
-    private static final String LOGIN_FAILED_CAUSE_TIME_WRONG =
-            "(clock skew) time of local server and remote server not match, please check ntp to remote server";
+    private static final String LOGIN_FAILED_CAUSE_TIME_WRONG = "(clock skew) time of local server and remote server not match, please check ntp to remote server";
 
-    private static final String LOGIN_FAILED_CAUSE_AES256_WRONG =
-            "(aes256 not support) aes256 not support by default jdk/jre, need copy local_policy.jar and"
-                    + " US_export_policy.jar from remote server in path /opt/huawei/Bigdata/jdk/jre/lib/security";
+    private static final String LOGIN_FAILED_CAUSE_AES256_WRONG = "(aes256 not support) aes256 not support by default jdk/jre, need copy local_policy.jar and"
+            + " US_export_policy.jar from remote server in path /opt/huawei/Bigdata/jdk/jre/lib/security";
 
-    private static final String LOGIN_FAILED_CAUSE_PRINCIPAL_WRONG =
-            "(no rule) principal format not support by default, need add property hadoop.security.auth_to_local(in"
-                    + " core-site.xml) value RULE:[1:$1] RULE:[2:$1]";
+    private static final String LOGIN_FAILED_CAUSE_PRINCIPAL_WRONG = "(no rule) principal format not support by default, need add property hadoop.security.auth_to_local(in"
+            + " core-site.xml) value RULE:[1:$1] RULE:[2:$1]";
 
-    private static final String LOGIN_FAILED_CAUSE_TIME_OUT =
-            "(time out) can not connect to kdc server or there is fire wall in the network";
+    private static final String LOGIN_FAILED_CAUSE_TIME_OUT = "(time out) can not connect to kdc server or there is fire wall in the network";
 
     private static final boolean IS_IBM_JDK = System.getProperty("java.vendor").contains("IBM");
 
@@ -112,35 +107,39 @@ public class LoginUtil {
         UserGroupInformation.setConfiguration(conf);
     }
 
-    private static boolean checkNeedLogin(String principal) throws IOException {
-        if (!UserGroupInformation.isSecurityEnabled()) {
-            logger.error(
-                    "UserGroupInformation is not SecurityEnabled, please check if core-site.xml exists in classpath.");
-            throw new IOException(
-                    "UserGroupInformation is not SecurityEnabled, please check if core-site.xml exists in classpath.");
-        }
-        UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
-        if ((currentUser != null) && (currentUser.hasKerberosCredentials())) {
-            if (checkCurrentUserCorrect(principal)) {
-                logger.info("current user is {} has logined.", currentUser);
-                if (!currentUser.isFromKeytab()) {
-                    logger.error("current user is not from keytab.");
-                    throw new IOException("current user is not from keytab.");
-                }
-                return false;
-            } else {
-                logger.error(
-                        "current user is "
-                                + currentUser
-                                + "has logined. please check your enviroment , especially when it used IBM JDK or"
-                                + " kerberos for OS count login!!");
-                throw new IOException(
-                        "current user is " + currentUser + " has logined. And please check your enviroment!!");
-            }
-        }
+    // private static boolean checkNeedLogin(String principal) throws IOException {
+    // if (!UserGroupInformation.isSecurityEnabled()) {
+    // logger.error(
+    // "UserGroupInformation is not SecurityEnabled, please check if core-site.xml
+    // exists in classpath.");
+    // throw new IOException(
+    // "UserGroupInformation is not SecurityEnabled, please check if core-site.xml
+    // exists in classpath.");
+    // }
+    // UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
+    // if ((currentUser != null) && (currentUser.hasKerberosCredentials())) {
+    // if (checkCurrentUserCorrect(principal)) {
+    // logger.info("current user is {} has logined.", currentUser);
+    // if (!currentUser.isFromKeytab()) {
+    // logger.error("current user is not from keytab.");
+    // throw new IOException("current user is not from keytab.");
+    // }
+    // return false;
+    // } else {
+    // logger.error(
+    // "current user is "
+    // + currentUser
+    // + "has logined. please check your enviroment , especially when it used IBM
+    // JDK or"
+    // + " kerberos for OS count login!!");
+    // throw new IOException(
+    // "current user is " + currentUser + " has logined. And please check your
+    // enviroment!!");
+    // }
+    // }
 
-        return true;
-    }
+    // return true;
+    // }
 
     private static void setKrb5Config(String krb5ConfFile) throws IOException {
         System.setProperty(JAVA_SECURITY_KRB5_CONF_KEY, krb5ConfFile);
@@ -292,61 +291,37 @@ public class LoginUtil {
         }
     }
 
-    private static void checkAuthenticateOverKrb() throws IOException {
-        UserGroupInformation loginUser = UserGroupInformation.getLoginUser();
-        UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
-        if (loginUser == null) {
-            logger.error("current user is " + currentUser + ", but loginUser is null.");
-            throw new IOException("current user is " + currentUser + ", but loginUser is null.");
-        }
-        if (!loginUser.equals(currentUser)) {
-            logger.error("current user is " + currentUser + ", but loginUser is " + loginUser + ".");
-            throw new IOException("current user is " + currentUser + ", but loginUser is " + loginUser + ".");
-        }
-        if (!loginUser.hasKerberosCredentials()) {
-            logger.error("current user is " + currentUser + " has no Kerberos Credentials.");
-            throw new IOException("current user is " + currentUser + " has no Kerberos Credentials.");
-        }
-        if (!UserGroupInformation.isLoginKeytabBased()) {
-            logger.error("current user is " + currentUser + " is not Login Keytab Based.");
-            throw new IOException("current user is " + currentUser + " is not Login Keytab Based.");
-        }
-    }
-
-    private static boolean checkCurrentUserCorrect(String principalParams) throws IOException {
-        UserGroupInformation ugi = UserGroupInformation.getCurrentUser();
-        if (ugi == null) {
-            logger.error("current user still null.");
-            throw new IOException("current user still null.");
-        }
-
-        String defaultRealm = null;
-        try {
-            defaultRealm = KerberosUtil.getDefaultRealm();
-        } catch (ClassNotFoundException
-                | NoSuchMethodException
-                | IllegalAccessException
-                | InvocationTargetException e) {
-            logger.warn("getDefaultRealm failed.");
-            throw new IOException(e);
-        }
-
-        String principal = principalParams;
-        if ((defaultRealm != null) && (defaultRealm.length() > 0)) {
-            StringBuilder realm = new StringBuilder();
-            StringBuilder principalWithRealm = new StringBuilder();
-            realm.append("@").append(defaultRealm);
-            if (!principal.endsWith(realm.toString())) {
-                principalWithRealm.append(principal).append(realm);
-                principal = principalWithRealm.toString();
-            }
-        }
-
-        return principal.equals(ugi.getUserName());
-    }
+    // private static void checkAuthenticateOverKrb() throws IOException {
+    // UserGroupInformation loginUser = UserGroupInformation.getLoginUser();
+    // UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
+    // if (loginUser == null) {
+    // logger.error("current user is " + currentUser + ", but loginUser is null.");
+    // throw new IOException("current user is " + currentUser + ", but loginUser is
+    // null.");
+    // }
+    // if (!loginUser.equals(currentUser)) {
+    // logger.error("current user is " + currentUser + ", but loginUser is " +
+    // loginUser + ".");
+    // throw new IOException("current user is " + currentUser + ", but loginUser is
+    // " + loginUser + ".");
+    // }
+    // if (!loginUser.hasKerberosCredentials()) {
+    // logger.error("current user is " + currentUser + " has no Kerberos
+    // Credentials.");
+    // throw new IOException("current user is " + currentUser + " has no Kerberos
+    // Credentials.");
+    // }
+    // if (!UserGroupInformation.isLoginKeytabBased()) {
+    // logger.error("current user is " + currentUser + " is not Login Keytab
+    // Based.");
+    // throw new IOException("current user is " + currentUser + " is not Login
+    // Keytab Based.");
+    // }
+    // }
 
     /**
-     * copy from hbase zkutil 0.94&0.98 A JAAS configuration that defines the login modules that we want to use for
+     * copy from hbase zkutil 0.94&0.98 A JAAS configuration that defines the login
+     * modules that we want to use for
      * login.
      */
     private static class JaasConfiguration extends javax.security.auth.login.Configuration {
@@ -374,14 +349,13 @@ public class LoginUtil {
             KEYTAB_KERBEROS_OPTIONS.putAll(BASIC_JAAS_OPTIONS);
         }
 
-        private static final AppConfigurationEntry KEYTAB_KERBEROS_LOGIN =
-                new AppConfigurationEntry(
-                        KerberosUtil.getKrb5LoginModuleName(),
-                        LoginModuleControlFlag.REQUIRED,
-                        KEYTAB_KERBEROS_OPTIONS);
+        private static final AppConfigurationEntry KEYTAB_KERBEROS_LOGIN = new AppConfigurationEntry(
+                KerberosUtil.getKrb5LoginModuleName(),
+                LoginModuleControlFlag.REQUIRED,
+                KEYTAB_KERBEROS_OPTIONS);
 
-        private static final AppConfigurationEntry[] KEYTAB_KERBEROS_CONF =
-                new AppConfigurationEntry[] {KEYTAB_KERBEROS_LOGIN};
+        private static final AppConfigurationEntry[] KEYTAB_KERBEROS_CONF = new AppConfigurationEntry[] {
+                KEYTAB_KERBEROS_LOGIN };
 
         private javax.security.auth.login.Configuration baseConfig;
 
